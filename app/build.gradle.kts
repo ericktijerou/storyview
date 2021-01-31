@@ -1,8 +1,8 @@
 import Dependencies.androidAppCompat
 import Dependencies.androidConstraintLayout
-import Dependencies.androidCore
 import Dependencies.androidKtx
-import Dependencies.kotlinCoroutinesAndroid
+import Dependencies.coil
+import Dependencies.exoplayer
 import Dependencies.kotlinCoroutinesCore
 import Dependencies.kotlinStdLib
 import Dependencies.materialDesign
@@ -16,18 +16,16 @@ plugins {
 }
 
 android {
-    compileSdkVersion(29)
+    compileSdkVersion(30)
 
     defaultConfig {
-        applicationId = "erick.tijerou.socialapp"
+        applicationId = "erick.tijerou.storyview"
         minSdkVersion(19)
-        targetSdkVersion(29)
+        targetSdkVersion(30)
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        vectorDrawables {
-            useSupportLibrary = true
-        }
+        multiDexEnabled = true
     }
 
     buildTypes {
@@ -35,12 +33,6 @@ android {
             isMinifyEnabled = false
             isShrinkResources = false
             isTestCoverageEnabled = true
-
-            buildConfigField(
-                "String",
-                "API_URL",
-                "\"https://randomuser.me/\""
-            )
         }
 
         getByName("release") {
@@ -48,15 +40,8 @@ android {
             isShrinkResources = true
             isDebuggable = false
             isZipAlignEnabled = true
-
             proguardFile(getDefaultProguardFile("proguard-android.txt"))
             proguardFile(file("proguard-rules.pro"))
-
-            buildConfigField(
-                "String",
-                "API_URL",
-                "\"https://randomuser.me/\""
-            )
         }
     }
 
@@ -76,18 +61,14 @@ android {
     }
 }
 
-kapt {
-    useBuildCache = true
-}
-
 dependencies {
     implementation(androidAppCompat)
     implementation(androidConstraintLayout)
-    implementation(androidCore)
     implementation(androidKtx)
     implementation(materialDesign)
     implementation(kotlinStdLib)
-    implementation(kotlinCoroutinesAndroid)
     implementation(kotlinCoroutinesCore)
     implementation(viewPager2)
+    implementation(coil)
+    implementation(exoplayer)
 }
