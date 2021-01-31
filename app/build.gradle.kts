@@ -55,9 +55,9 @@ android {
     }
 
     sourceSets {
-        val commonTest = "src/commonTest/java"
-        getByName("androidTest").java.srcDirs(commonTest)
-        getByName("test").java.srcDirs(commonTest)
+        getByName("main").java.srcDirs("src/main/kotlin")
+        getByName("test").java.srcDirs("src/test/kotlin")
+        getByName("androidTest").java.srcDirs("src/androidTest/kotlin")
     }
 }
 
