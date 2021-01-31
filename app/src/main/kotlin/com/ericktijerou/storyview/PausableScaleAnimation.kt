@@ -35,6 +35,6 @@ class PausableScaleAnimation(
     }
 
     companion object {
-        const val DEFAULT_ELAPSED: Long = 0
+        const val DEFAULT_ELAPSED = NUMBER_ZERO.toLong()
     }
 }
