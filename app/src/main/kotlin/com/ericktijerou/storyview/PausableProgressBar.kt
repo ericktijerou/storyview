@@ -77,16 +77,16 @@ class PausableProgressBar @JvmOverloads constructor(
 
     fun startProgress() {
         maxProgressView?.gone()
-        if (duration <= NUMBER_ZERO) duration = DEFAULT_PROGRESS_DURATION
+        if (duration <= NUMBER_ZERO_FLOAT) duration = DEFAULT_PROGRESS_DURATION
         animation = PausableScaleAnimation(
-            NUMBER_ZERO,
-            NUMBER_ONE,
-            NUMBER_ONE,
-            NUMBER_ONE,
+            NUMBER_ZERO_FLOAT,
+            NUMBER_ONE_FLOAT,
+            NUMBER_ONE_FLOAT,
+            NUMBER_ONE_FLOAT,
             Animation.ABSOLUTE,
-            NUMBER_ZERO,
+            NUMBER_ZERO_FLOAT,
             Animation.RELATIVE_TO_SELF,
-            NUMBER_ZERO
+            NUMBER_ZERO_FLOAT
         ).apply {
             duration = duration
             interpolator = LinearInterpolator()
