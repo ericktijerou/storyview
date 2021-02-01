@@ -22,7 +22,7 @@ class PausableProgressBar @JvmOverloads constructor(
     private var isStarted = false
 
     init {
-        LayoutInflater.from(context).inflate(R.layout.pausable_progress, this)
+        LayoutInflater.from(context).inflate(R.layout.view_progress, this)
         frontProgressView = findViewById(R.id.front_progress)
         maxProgressView = findViewById(R.id.max_progress)
     }
@@ -88,7 +88,7 @@ class PausableProgressBar @JvmOverloads constructor(
             Animation.RELATIVE_TO_SELF,
             NUMBER_ZERO_FLOAT
         ).apply {
-            duration = duration
+            duration = this@PausableProgressBar.duration
             interpolator = LinearInterpolator()
             setAnimationListener(object : Animation.AnimationListener {
                 override fun onAnimationStart(animation: Animation) {
