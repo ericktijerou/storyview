@@ -27,5 +27,5 @@ object Versions {
     internal const val androidKtxVersion = "0.1"
     internal const val viewPager2Version = "1.0.0"
     internal const val coilVersion = "1.1.1"
-    internal const val exoplayerVersion = "2.12.0"
+    internal const val exoplayerVersion = "2.12.3"
 }
