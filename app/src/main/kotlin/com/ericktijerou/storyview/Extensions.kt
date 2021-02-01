@@ -23,3 +23,5 @@ fun View.visible(value: Boolean = true) {
 fun View.gone() {
     visibility = View.GONE
 }
+
+fun Int?.orZero(): Int = this ?: 0
