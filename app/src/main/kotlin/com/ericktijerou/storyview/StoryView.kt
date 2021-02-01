@@ -54,10 +54,6 @@ class StoryView @JvmOverloads constructor(
         //counter = restorePosition()
         onResumeCalled = true
         storyUser?.let {
-            if (it.storyList[counter].isVideo() && !onVideoPrepared) {
-                simpleExoPlayer?.playWhenReady = false
-                return
-            }
             simpleExoPlayer?.seekTo(5)
             simpleExoPlayer?.playWhenReady = true
             if (counter == 0) {
@@ -74,6 +70,7 @@ class StoryView @JvmOverloads constructor(
     fun stopStory() {
         simpleExoPlayer?.playWhenReady = false
         binding.storiesProgressView.leave()
+        simpleExoPlayer?.release()
     }
 
     override fun onComplete() {
@@ -98,11 +95,6 @@ class StoryView @JvmOverloads constructor(
             updateStory()
         }
     }
-
-/*    override fun onDestroyView() {
-        super.onDestroyView()
-        simpleExoPlayer?.release()
-    }*/
 
     private fun updateStory() {
         simpleExoPlayer?.stop()
