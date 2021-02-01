@@ -39,7 +39,6 @@ class StoryView @JvmOverloads constructor(
     private var counter = 0
     private var pressTime = 0L
     private var limit = 500L
-    private var onResumeCalled = false
     private var onVideoPrepared = false
     private val binding: ViewStoryBinding
 
@@ -52,7 +51,6 @@ class StoryView @JvmOverloads constructor(
 
     fun startStory() {
         //counter = restorePosition()
-        onResumeCalled = true
         storyUser?.let {
             simpleExoPlayer?.seekTo(5)
             simpleExoPlayer?.playWhenReady = true
@@ -141,9 +139,7 @@ class StoryView @JvmOverloads constructor(
                     )
                 simpleExoPlayer?.setMediaSource(mediaSource, false)
                 simpleExoPlayer?.prepare()
-                if (onResumeCalled) {
-                    simpleExoPlayer?.playWhenReady = true
-                }
+                simpleExoPlayer?.playWhenReady = true
             }
 
 
@@ -283,10 +279,8 @@ class StoryView @JvmOverloads constructor(
     }
 
     fun resumeCurrentStory() {
-        if (onResumeCalled) {
-            simpleExoPlayer?.playWhenReady = true
-            showStoryOverlay()
-            binding.storiesProgressView.resume()
-        }
+        simpleExoPlayer?.playWhenReady = true
+        showStoryOverlay()
+        binding.storiesProgressView.resume()
     }
 }

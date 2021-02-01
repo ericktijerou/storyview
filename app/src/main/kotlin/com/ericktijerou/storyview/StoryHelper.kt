@@ -1,6 +1,7 @@
 package com.ericktijerou.storyview
 
 import android.text.format.DateUtils
+import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
 object StoryHelper {
@@ -38,21 +39,9 @@ object StoryHelper {
         val now = System.currentTimeMillis()
         val difference = now - timeInMilliseconds
         val relativeTime = when {
-            difference < DateUtils.MINUTE_IN_MILLIS -> DateUtils.getRelativeTimeSpanString(
-                timeInMilliseconds,
-                now,
-                DateUtils.SECOND_IN_MILLIS
-            )
-            difference < DateUtils.HOUR_IN_MILLIS -> DateUtils.getRelativeTimeSpanString(
-                timeInMilliseconds,
-                now,
-                DateUtils.MINUTE_IN_MILLIS
-            )
-            difference < DateUtils.DAY_IN_MILLIS -> DateUtils.getRelativeTimeSpanString(
-                timeInMilliseconds,
-                now,
-                DateUtils.HOUR_IN_MILLIS
-            )
+            difference < DateUtils.MINUTE_IN_MILLIS -> "${TimeUnit.MILLISECONDS.toSeconds(difference)} s"
+            difference < DateUtils.HOUR_IN_MILLIS -> "${TimeUnit.MILLISECONDS.toMinutes(difference)} min"
+            difference < DateUtils.DAY_IN_MILLIS -> "${TimeUnit.MILLISECONDS.toHours(difference)} h"
             difference < DateUtils.WEEK_IN_MILLIS -> DateUtils.getRelativeTimeSpanString(
                 timeInMilliseconds,
                 now,
