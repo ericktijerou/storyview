@@ -1,47 +1,14 @@
 package com.ericktijerou.storyview
 
-import android.view.LayoutInflater
-import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
-import com.ericktijerou.storyview.databinding.ItemStoryBinding
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.viewpager2.adapter.FragmentStateAdapter
 
-class StoryAdapter(val pageViewListener: PageViewListener, private val list: List<StoryUserModel>) :
-    RecyclerView.Adapter<StoryAdapter.StoryViewHolder>() {
+class StoryAdapter(fragmentActivity: FragmentActivity, private val storyList: List<StoryUserModel>) : FragmentStateAdapter(fragmentActivity) {
 
-    var currentPage = -1
-     set(value) {
-         notifyItemChanged(field)
-         notifyItemChanged(value)
-         field = value
-     }
+    override fun getItemCount(): Int = storyList.size
 
-    override fun getItemCount() = list.size
-
-    override fun onBindViewHolder(holder: StoryViewHolder, position: Int) {
-        holder.bindViews(list[position], position)
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StoryViewHolder {
-        val view = ItemStoryBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return StoryViewHolder(view)
-    }
-
-    private interface PagerViewHolder {
-        fun bindViews(story: StoryUserModel, position: Int)
-    }
-
-    inner class StoryViewHolder(private val binding: ItemStoryBinding) :
-        RecyclerView.ViewHolder(binding.root), PagerViewHolder {
-        override fun bindViews(story: StoryUserModel, position: Int) {
-            binding.root.apply {
-                storyUser = story
-                pageViewListener = this@StoryAdapter.pageViewListener
-                if (currentPage == position) {
-                    startStory()
-                } else {
-                    stopStory()
-                }
-            }
-        }
+    override fun createFragment(position: Int): Fragment {
+        return StoryFragment.newInstance(position, storyList[position])
     }
 }
