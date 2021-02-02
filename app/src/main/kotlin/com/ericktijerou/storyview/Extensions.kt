@@ -3,6 +3,8 @@ package com.ericktijerou.storyview
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
+import androidx.fragment.app.Fragment
 
 fun ViewGroup.inflate(layoutId: Int): View {
     return LayoutInflater.from(this.context)
@@ -25,3 +27,8 @@ fun View.gone() {
 }
 
 fun Int?.orZero(): Int = this ?: 0
+
+fun <T : Fragment> T.withArguments(vararg params: Pair<String, Any?>): T {
+    arguments = bundleOf(*params)
+    return this
+}
