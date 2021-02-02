@@ -11,8 +11,7 @@ import Dependencies.viewPager2
 plugins {
     id("com.android.application")
     kotlin("android")
-    kotlin("kapt")
-    id("kotlinx-serialization")
+    id("kotlin-parcelize")
 }
 
 android {
