@@ -1,3 +1,7 @@
 package com.ericktijerou.storyview
 
-data class StoryUserModel(val username: String, val profileUrl: String, val storyList: List<StoryModel>)
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
+data class StoryUserModel(val username: String, val profileUrl: String, val storyList: List<StoryModel>): Parcelable
