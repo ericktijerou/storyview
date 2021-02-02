@@ -41,12 +41,6 @@ class MainActivity : AppCompatActivity(), PageViewListener {
             offscreenPageLimit = 3
             setPageTransformer(CubeOutTransformer())
             adapter = storyAdapter
-            registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-                override fun onPageSelected(position: Int) {
-                    super.onPageSelected(position)
-                    storyAdapter.currentPage = position
-                }
-            })
         }
     }
 
