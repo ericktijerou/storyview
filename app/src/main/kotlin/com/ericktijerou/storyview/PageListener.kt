@@ -1,6 +1,6 @@
 package com.ericktijerou.storyview
 
-interface PageViewListener {
+interface PageListener {
     fun onBackPageView()
     fun onNextPageView()
 }

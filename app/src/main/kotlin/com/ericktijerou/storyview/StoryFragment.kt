@@ -10,12 +10,10 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import coil.load
-import coil.request.CachePolicy
 import coil.transform.CircleCropTransformation
 import com.ericktijerou.storyview.databinding.FragmentStoryBinding
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
-import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
 import com.google.android.exoplayer2.upstream.cache.CacheDataSource
 import com.google.android.exoplayer2.util.Util
@@ -35,9 +33,8 @@ class StoryFragment : Fragment(),
     private val stories: List<StoryModel> by lazy { storyUser.storyList }
 
     private var simpleExoPlayer: SimpleExoPlayer? = null
-    private lateinit var mediaDataSourceFactory: DataSource.Factory
-    private var pageViewListener: PageViewListener? = null
-    private var counter = 0
+    private var pageListener: PageListener? = null
+    private var subStoryPosition = 0
     private var pressTime = 0L
     private var limit = 500L
     private var onResumeCalled = false
@@ -58,35 +55,35 @@ class StoryFragment : Fragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.storyDisplayVideo.useController = false
-        updateStory()
-        setUpUi()
+        startStory()
+        initView()
     }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        this.pageViewListener = context as PageViewListener
+        this.pageListener = context as PageListener
     }
 
     override fun onStart() {
         super.onStart()
-        counter = restorePosition()
+        subStoryPosition = restorePosition()
     }
 
     override fun onResume() {
         super.onResume()
         onResumeCalled = true
-        if (stories[counter].isVideo() && !onVideoPrepared) {
+        if (stories[subStoryPosition].isVideo() && !onVideoPrepared) {
             simpleExoPlayer?.playWhenReady = false
             return
         }
 
         simpleExoPlayer?.seekTo(5)
         simpleExoPlayer?.playWhenReady = true
-        if (counter == 0) {
+        if (subStoryPosition == 0) {
             binding.storiesProgressView.startStories()
         } else {
-            counter = MainActivity.progressState.get(arguments?.getInt(POSITION) ?: 0)
-            binding.storiesProgressView.startStories(counter)
+            subStoryPosition = MainActivity.progressState.get(arguments?.getInt(POSITION) ?: 0)
+            binding.storiesProgressView.startStories(subStoryPosition)
         }
     }
 
@@ -98,23 +95,23 @@ class StoryFragment : Fragment(),
 
     override fun onComplete() {
         simpleExoPlayer?.release()
-        pageViewListener?.onNextPageView()
+        pageListener?.onNextPageView()
     }
 
     override fun onPrev() {
-        if (counter - 1 < 0) return
-        --counter
-        savePosition(counter)
-        updateStory()
+        if (subStoryPosition - 1 < 0) return
+        --subStoryPosition
+        savePosition(subStoryPosition)
+        startStory()
     }
 
     override fun onNext() {
-        if (stories.size <= counter + 1) {
+        if (stories.size <= subStoryPosition + 1) {
             return
         }
-        ++counter
-        savePosition(counter)
-        updateStory()
+        ++subStoryPosition
+        savePosition(subStoryPosition)
+        startStory()
     }
 
     override fun onDestroyView() {
@@ -123,10 +120,10 @@ class StoryFragment : Fragment(),
         simpleExoPlayer?.release()
     }
 
-    private fun updateStory() {
+    private fun startStory() {
         simpleExoPlayer?.stop()
         with(binding) {
-            if (stories[counter].isVideo()) {
+            if (stories[subStoryPosition].isVideo()) {
                 storyDisplayVideo.visible()
                 storyDisplayImage.gone()
                 storyDisplayVideoProgress.visible()
@@ -135,8 +132,8 @@ class StoryFragment : Fragment(),
                 storyDisplayVideo.gone()
                 storyDisplayVideoProgress.gone()
                 storyDisplayImage.visible()
-                storyDisplayImage.load(stories[counter].url)
-                binding.storyDisplayTime.text = stories[counter].relativeTime
+                storyDisplayImage.load(stories[subStoryPosition].url)
+                binding.storyDisplayTime.text = stories[subStoryPosition].relativeTime
             }
         }
     }
@@ -154,11 +151,11 @@ class StoryFragment : Fragment(),
                     )
                 )
             )
-            mediaDataSourceFactory = CacheDataSource.Factory().setCache(cache)
+            val mediaDataSourceFactory = CacheDataSource.Factory().setCache(cache)
                 .setUpstreamDataSourceFactory(defaultHttpDataSourceFactory)
             val mediaSource =
                 ProgressiveMediaSource.Factory(mediaDataSourceFactory).createMediaSource(
-                    MediaItem.fromUri(stories[counter].url)
+                    MediaItem.fromUri(stories[subStoryPosition].url)
                 )
             simpleExoPlayer?.setMediaSource(mediaSource, false)
             simpleExoPlayer?.prepare()
@@ -172,8 +169,8 @@ class StoryFragment : Fragment(),
             override fun onPlayerError(error: ExoPlaybackException) {
                 super.onPlayerError(error)
                 binding.storyDisplayVideoProgress.gone()
-                if (counter == stories.size.minus(1)) {
-                    pageViewListener?.onNextPageView()
+                if (subStoryPosition == stories.size.minus(1)) {
+                    pageListener?.onNextPageView()
                 } else {
                     binding.storiesProgressView.skip()
                 }
@@ -187,7 +184,7 @@ class StoryFragment : Fragment(),
                     pauseCurrentStory()
                 } else {
                     binding.storyDisplayVideoProgress.gone()
-                    binding.storiesProgressView.getProgressWithIndex(counter)
+                    binding.storiesProgressView.getProgressWithIndex(subStoryPosition)
                         .setDuration(simpleExoPlayer?.duration ?: 8000L)
                     onVideoPrepared = true
                     resumeCurrentStory()
@@ -196,7 +193,7 @@ class StoryFragment : Fragment(),
         })
     }
 
-    private fun setUpUi() {
+    private fun initView() {
         val touchListener = object : OnSwipeTouchListener(activity!!) {
             override fun onSwipeTop() {
                 Toast.makeText(activity, "onSwipeTop", Toast.LENGTH_LONG).show()
@@ -209,15 +206,15 @@ class StoryFragment : Fragment(),
             override fun onClick(view: View) {
                 when (view) {
                     binding.next -> {
-                        if (counter == stories.size - 1) {
-                            pageViewListener?.onNextPageView()
+                        if (subStoryPosition == stories.size - 1) {
+                            pageListener?.onNextPageView()
                         } else {
                             binding.storiesProgressView.skip()
                         }
                     }
                     binding.previous -> {
-                        if (counter == 0) {
-                            pageViewListener?.onBackPageView()
+                        if (subStoryPosition == 0) {
+                            pageListener?.onBackPageView()
                         } else {
                             binding.storiesProgressView.reverse()
                         }

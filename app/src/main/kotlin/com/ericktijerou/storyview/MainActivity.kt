@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.util.Log
 import android.util.SparseIntArray
 import androidx.appcompat.app.AppCompatActivity
-import androidx.viewpager2.widget.ViewPager2
 import coil.imageLoader
 import coil.request.CachePolicy
 import coil.request.ImageRequest
@@ -17,11 +16,10 @@ import com.google.android.exoplayer2.upstream.cache.CacheDataSource
 import com.google.android.exoplayer2.upstream.cache.CacheWriter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 
-class MainActivity : AppCompatActivity(), PageViewListener {
+class MainActivity : AppCompatActivity(), PageListener {
 
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
 
