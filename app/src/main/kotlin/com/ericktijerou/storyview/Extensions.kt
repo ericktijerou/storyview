@@ -26,6 +26,10 @@ fun View.gone() {
     visibility = View.GONE
 }
 
+fun View.invisible() {
+    visibility = View.INVISIBLE
+}
+
 fun Int?.orZero(): Int = this ?: 0
 
 fun <T : Fragment> T.withArguments(vararg params: Pair<String, Any?>): T {

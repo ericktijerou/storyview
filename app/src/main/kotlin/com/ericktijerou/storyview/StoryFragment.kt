@@ -42,6 +42,7 @@ class StoryFragment : Fragment(),
 
     private var _binding: FragmentStoryBinding? = null
     private val binding get() = _binding!!
+    private val headerBinding get() = binding.storyHeader
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -54,7 +55,7 @@ class StoryFragment : Fragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.storyDisplayVideo.useController = false
+        binding.pvVideo.useController = false
         startStory()
         initView()
     }
@@ -80,17 +81,17 @@ class StoryFragment : Fragment(),
         simpleExoPlayer?.seekTo(5)
         simpleExoPlayer?.playWhenReady = true
         if (subStoryPosition == 0) {
-            binding.storiesProgressView.startStories()
+            headerBinding.storiesProgressView.startStories()
         } else {
             subStoryPosition = MainActivity.progressState.get(arguments?.getInt(POSITION) ?: 0)
-            binding.storiesProgressView.startStories(subStoryPosition)
+            headerBinding.storiesProgressView.startStories(subStoryPosition)
         }
     }
 
     override fun onPause() {
         super.onPause()
         simpleExoPlayer?.playWhenReady = false
-        binding.storiesProgressView.leave()
+        headerBinding.storiesProgressView.leave()
     }
 
     override fun onComplete() {
@@ -124,16 +125,16 @@ class StoryFragment : Fragment(),
         simpleExoPlayer?.stop()
         with(binding) {
             if (stories[subStoryPosition].isVideo()) {
-                storyDisplayVideo.visible()
-                storyDisplayImage.gone()
-                storyDisplayVideoProgress.visible()
+                pvVideo.visible()
+                ivImage.gone()
+                progress.visible()
                 initializePlayer()
             } else {
-                storyDisplayVideo.gone()
-                storyDisplayVideoProgress.gone()
-                storyDisplayImage.visible()
-                storyDisplayImage.load(stories[subStoryPosition].url)
-                binding.storyDisplayTime.text = stories[subStoryPosition].relativeTime
+                pvVideo.gone()
+                progress.gone()
+                ivImage.visible()
+                ivImage.load(stories[subStoryPosition].url)
+                headerBinding.tvTime.text = stories[subStoryPosition].relativeTime
             }
         }
     }
@@ -162,29 +163,29 @@ class StoryFragment : Fragment(),
             simpleExoPlayer?.playWhenReady = true
         }
 
-        binding.storyDisplayVideo.setShutterBackgroundColor(Color.BLACK)
-        binding.storyDisplayVideo.player = simpleExoPlayer
+        binding.pvVideo.setShutterBackgroundColor(Color.BLACK)
+        binding.pvVideo.player = simpleExoPlayer
 
         simpleExoPlayer?.addListener(object : Player.EventListener {
             override fun onPlayerError(error: ExoPlaybackException) {
                 super.onPlayerError(error)
-                binding.storyDisplayVideoProgress.gone()
+                binding.progress.gone()
                 if (subStoryPosition == stories.size.minus(1)) {
                     pageListener?.onNextPageView()
                 } else {
-                    binding.storiesProgressView.skip()
+                    headerBinding.storiesProgressView.skip()
                 }
             }
 
             override fun onIsLoadingChanged(isLoading: Boolean) {
                 super.onIsLoadingChanged(isLoading)
                 if (isLoading) {
-                    binding.storyDisplayVideoProgress.visible()
+                    binding.progress.visible()
                     pressTime = System.currentTimeMillis()
                     pauseCurrentStory()
                 } else {
-                    binding.storyDisplayVideoProgress.gone()
-                    binding.storiesProgressView.getProgressWithIndex(subStoryPosition)
+                    binding.progress.gone()
+                    headerBinding.storiesProgressView.getProgressWithIndex(subStoryPosition)
                         .setDuration(simpleExoPlayer?.duration ?: 8000L)
                     onVideoPrepared = true
                     resumeCurrentStory()
@@ -205,18 +206,18 @@ class StoryFragment : Fragment(),
 
             override fun onClick(view: View) {
                 when (view) {
-                    binding.next -> {
+                    binding.vNext -> {
                         if (subStoryPosition == stories.size - 1) {
                             pageListener?.onNextPageView()
                         } else {
-                            binding.storiesProgressView.skip()
+                            headerBinding.storiesProgressView.skip()
                         }
                     }
-                    binding.previous -> {
+                    binding.vPrevious -> {
                         if (subStoryPosition == 0) {
                             pageListener?.onBackPageView()
                         } else {
-                            binding.storiesProgressView.reverse()
+                            headerBinding.storiesProgressView.reverse()
                         }
                     }
                 }
@@ -244,33 +245,33 @@ class StoryFragment : Fragment(),
             }
         }
 
-        with(binding) {
-            previous.setOnTouchListener(touchListener)
-            next.setOnTouchListener(touchListener)
+        with(headerBinding) {
+            binding.vPrevious.setOnTouchListener(touchListener)
+            binding.vNext.setOnTouchListener(touchListener)
 
             storiesProgressView.setStoryCountDebug(
                 stories.size, position = arguments?.getInt(POSITION) ?: -1
             )
             storiesProgressView.setAllStoryDuration(4000L)
             storiesProgressView.setStoryListener(this@StoryFragment)
-            storyDisplayProfilePicture.load(storyUser.profileUrl) {
+            ivPicture.load(storyUser.profileUrl) {
                 transformations(CircleCropTransformation())
             }
-            storyDisplayNick.text = storyUser.username
+            tvUsername.text = storyUser.username
         }
     }
 
     private fun showStoryOverlay() {
-        if (binding.storyOverlay.alpha != 0F) return
-        binding.storyOverlay.animate()
+        if (headerBinding.storyHeader.alpha != 0F) return
+        headerBinding.storyHeader.animate()
             .setDuration(100)
             .alpha(1F)
             .start()
     }
 
     private fun hideStoryOverlay() {
-        if (binding.storyOverlay.alpha != 1F) return
-        binding.storyOverlay.animate()
+        if (headerBinding.storyHeader.alpha != 1F) return
+        headerBinding.storyHeader.animate()
             .setDuration(200)
             .alpha(0F)
             .start()
@@ -286,14 +287,14 @@ class StoryFragment : Fragment(),
 
     fun pauseCurrentStory() {
         simpleExoPlayer?.playWhenReady = false
-        binding.storiesProgressView.pause()
+        headerBinding.storiesProgressView.pause()
     }
 
     fun resumeCurrentStory() {
         if (onResumeCalled) {
             simpleExoPlayer?.playWhenReady = true
             showStoryOverlay()
-            binding.storiesProgressView.resume()
+            headerBinding.storiesProgressView.resume()
         }
     }
 

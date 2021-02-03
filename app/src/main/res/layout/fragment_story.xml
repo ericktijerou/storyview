@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <com.google.android.exoplayer2.ui.PlayerView
-        android:id="@+id/storyDisplayVideo"
+        android:id="@+id/pvVideo"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"
@@ -14,99 +13,38 @@
         app:surface_type="texture_view" />
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/storyDisplayImage"
+        android:id="@+id/ivImage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop" />
 
     <ProgressBar
-        android:id="@+id/storyDisplayVideoProgress"
+        android:id="@+id/progress"
         style="?android:attr/progressBarStyleInverse"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_margin="8dp"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <View
+        android:id="@+id/vPrevious"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:orientation="horizontal">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/vNext"/>
 
-        <View
-            android:id="@+id/previous"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="2" />
-
-        <View
-            android:id="@+id/next"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="3" />
-    </LinearLayout>
-
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/storyOverlay"
-        android:layout_width="match_parent"
+    <View
+        android:id="@+id/vNext"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/vPrevious"/>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:background="@drawable/story_background"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <com.ericktijerou.storyview.StoryProgressView
-            android:id="@+id/storiesProgressView"
-            android:layout_width="match_parent"
-            android:layout_height="3dp"
-            android:layout_gravity="top"
-            android:layout_marginTop="8dp"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <LinearLayout
-            android:id="@+id/storyDisplayProfile"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:padding="4dp"
-            app:layout_constraintTop_toBottomOf="@+id/storiesProgressView">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/storyDisplayProfilePicture"
-                android:layout_width="34dp"
-                android:layout_height="34dp"
-                android:layout_margin="8dp" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/storyDisplayNick"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="#ffffff"
-                    android:textSize="13sp"
-                    android:textStyle="bold"
-                    tools:text="username" />
-
-                <TextView
-                    android:id="@+id/storyDisplayTime"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="#ffffff"
-                    android:textSize="12sp"
-                    tools:text="nm ago" />
-
-            </LinearLayout>
-        </LinearLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    <include
+        android:id="@+id/storyHeader"
+        layout="@layout/include_story_header"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

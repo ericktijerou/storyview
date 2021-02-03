@@ -11,7 +11,7 @@ object StoryHelper {
         for (i in 1..10) {
             list.add(
                 StoryUserModel(
-                    username = "username$i",
+                    username = getRandomAlphaNumericString(10),
                     profileUrl = pictureList[Random.nextInt(pictureList.size)],
                     storyList = generateStoryList()
                 )
